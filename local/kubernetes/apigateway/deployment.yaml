@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway-service
+  namespace: tst
+  labels:
+    app: apigateway-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apigateway-service
+  template:
+    metadata:
+      name: apigateway-service
+      labels:
+        app: apigateway-service
+    spec:
+#      nodeSelector:
+#        nodegroup: util
+      containers:
+        - name: apigateway-service
+          image: nowgnas/cac-apigateway:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8888
+          resources:
+            requests:
+              memory: "250Mi"
+          env:
+            - name: PROFILES
+              value: tst
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8888
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8888
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
+      restartPolicy: Always

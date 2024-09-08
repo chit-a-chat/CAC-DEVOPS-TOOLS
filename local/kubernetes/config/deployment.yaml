@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: config-service
+  namespace: tst
+  labels:
+    app: config-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: config-service
+  template:
+    metadata:
+      name: config-service
+      labels:
+        app: config-service
+    spec:
+#      nodeSelector:
+#        nodegroup: util
+      containers:
+        - name: config-service
+          image: nowgnas/cac-config:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8888
+          resources:
+            requests:
+              memory: "250Mi"
+          env:
+            - name: PROFILES
+              value: tst
+            - name: JKS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kube-pass
+                  key: jks_pass
+            - name: GITHUB_USERNAME
+              value: nowgnas
+            - name: GITHUB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kube-pass
+                  key: token
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8888
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8888
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
+      restartPolicy: Always

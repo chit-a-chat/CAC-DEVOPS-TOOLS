@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: apigateway-service
+  namespace: tst
+  labels:
+    app: apigateway-service
+    profile: tst  # Add the profile label here
+spec:
+  selector:
+    app: apigateway-service
+  ports:
+    - protocol: TCP
+      port: 8888
+      targetPort: 8888
+  type: ClusterIP

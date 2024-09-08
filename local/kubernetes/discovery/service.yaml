@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: discovery-service
+  namespace: tst
+  labels:
+    app: discovery-service
+    profile: tst  # Add the profile label here
+spec:
+  selector:
+    app: discovery-service
+  ports:
+    - protocol: TCP
+      port: 8761
+      targetPort: 8761
+  type: ClusterIP

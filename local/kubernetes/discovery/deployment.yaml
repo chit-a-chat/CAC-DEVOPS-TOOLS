@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-service
+  namespace: tst
+  labels:
+    app: discovery-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discovery-service
+  template:
+    metadata:
+      name: discovery-service
+      labels:
+        app: discovery-service
+    spec:
+#      nodeSelector:
+#        nodegroup: util
+      containers:
+        - name: discovery-service
+          image: nowgnas/cac-discovery:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8761
+          resources:
+            requests:
+              memory: "250Mi"
+          env:
+            - name: PROFILES
+              value: tst
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8761
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8761
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 2
+      restartPolicy: Always
