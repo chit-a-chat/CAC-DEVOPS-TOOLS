@@ -23,7 +23,7 @@ spec:
           image: nowgnas/cac-apigateway:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8888
+            - containerPort: 8000
           resources:
             requests:
               memory: "250Mi"
@@ -33,14 +33,14 @@ spec:
           readinessProbe:
             httpGet:
               path: /actuator/health/readiness
-              port: 8888
+              port: 8000
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 2
           livenessProbe:
             httpGet:
               path: /actuator/health/liveness
-              port: 8888
+              port: 8000
             initialDelaySeconds: 30
             periodSeconds: 30
             timeoutSeconds: 2

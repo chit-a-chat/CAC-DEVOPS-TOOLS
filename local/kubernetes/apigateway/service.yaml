@@ -11,6 +11,7 @@ spec:
     app: apigateway-service
   ports:
     - protocol: TCP
-      port: 8888
-      targetPort: 8888
-  type: ClusterIP
+      port: 8000
+      targetPort: 8000
+      nodePort: 30002
+  type: NodePort
